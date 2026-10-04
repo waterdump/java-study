@@ -12,9 +12,9 @@ public class InstanceApp {
         p1.close();
 
         PrintWriter p2 = new PrintWriter("result1.txt");
-        p2.write("Hello 1");
+        p2.write("Hello 2");
         p2.close();
 
-        
+
     }
 }
