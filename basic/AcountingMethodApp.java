@@ -1,19 +1,36 @@
 package basic;
 
 public class AcountingMethodApp {
-    public static double valueOfSupply = 10000.0;
-    public static double vatRate = 0.1;
-    public static double expenseRate = 0.3;
+    public static double valueOfSupply;
+    public static double vatRate;
+    public static double expenseRate;
 
     public static void main(String[] args) {
+        valueOfSupply = 10000.0;
+        vatRate = 0.1;
+        expenseRate = 0.3;
+
+        double vat = getVAT();
+        double total = getTotal();
+        double expense = getExpense();
+        double income = getIncome();
+        double dividend1 = getDividend1();
+        double dividend2 = getDividend2();
+        double dividend3 = getDividend3();
+
+        print(vat, total, expense, income, dividend1, dividend2, dividend3);
+    }
+
+    public static void print(double vat, double total, double expense, double income,
+                             double dividend1, double dividend2, double dividend3) {
         System.out.println("Value of supply : " + valueOfSupply);
-        System.out.println("VAT : " + getVAT());
-        System.out.println("Total : " + getTotal());
-        System.out.println("Expense : " + getExpense());
-        System.out.println("Income : " + getIncome());
-        System.out.println("Dividend 1 : " + getDividend1());
-        System.out.println("Dividend 2 : " + getDividend2());
-        System.out.println("Dividend 3 : " + getDividend3());
+        System.out.println("VAT : " + vat);
+        System.out.println("Total : " + total);
+        System.out.println("Expense : " + expense);
+        System.out.println("Income : " + income);
+        System.out.println("Dividend 1 : " + dividend1);
+        System.out.println("Dividend 2 : " + dividend2);
+        System.out.println("Dividend 3 : " + dividend3);
     }
 
     public static double getVAT() {
