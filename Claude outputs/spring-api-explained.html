@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>스프링 API 강의 정리</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#1d2330;--sub:#5b6474;--line:#e3e6eb;--green:#2f9e62;--greenbg:#e8f6ee;--blue:#2b6fd6;--bluebg:#e9f1fd;--orange:#c46a16;--orangebg:#fdf1e4;--code:#f1f3f6}
+@media (prefers-color-scheme:dark){:root{--bg:#14171c;--card:#1d2128;--ink:#e8ebf0;--sub:#9aa3b2;--line:#2e333c;--green:#56c48a;--greenbg:#1d3328;--blue:#6ea2f0;--bluebg:#1c2a40;--orange:#e9a25c;--orangebg:#3a2b1c;--code:#262b33}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR",sans-serif;line-height:1.6}
+.wrap{max-width:980px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:26px;margin:0 0 6px}
+.lead{color:var(--sub);margin:0 0 28px}
+section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:22px}
+h2{font-size:19px;margin:0 0 4px}
+.step{display:inline-block;font-size:12px;font-weight:700;color:var(--green);background:var(--greenbg);border-radius:20px;padding:2px 10px;margin-bottom:8px}
+p.desc{color:var(--sub);margin:4px 0 16px}
+pre{background:var(--code);border-radius:10px;padding:14px 16px;margin:0;overflow-x:auto;font:13.5px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid2>div{min-width:0}
+.tblwrap{overflow-x:auto}
+@media (max-width:720px){.grid2{grid-template-columns:1fr}}
+.label{font-size:13px;font-weight:700;margin:0 0 6px}
+.label.java{color:var(--orange)}.label.js{color:var(--blue)}
+.hl{background:var(--orangebg);border-radius:3px;padding:0 2px}
+.safe{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;margin:6px 0 4px}
+.box{border:2px solid var(--line);border-radius:12px;padding:12px 16px;text-align:center;min-width:120px}
+.box b{display:block;font-size:15px}
+.box span{font-size:12.5px;color:var(--sub)}
+.box.vault{border-color:var(--orange);background:var(--orangebg)}
+.box.door{border-color:var(--green);background:var(--greenbg)}
+.box.out{border-color:var(--blue);background:var(--bluebg)}
+.arrow{font-size:20px;color:var(--sub)}
+.flow{list-style:none;margin:0;padding:0;counter-reset:f}
+.flow li{position:relative;padding:12px 14px 12px 52px;border:1px solid var(--line);border-radius:10px;margin-bottom:10px}
+.flow li::before{counter-increment:f;content:counter(f);position:absolute;left:14px;top:12px;width:26px;height:26px;border-radius:50%;background:var(--green);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
+.flow code,.tbl code,p code{background:var(--code);border-radius:4px;padding:1px 5px;font-size:13px}
+.flow .who{font-size:12px;color:var(--sub)}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th,.tbl td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left;vertical-align:top}
+.tbl th{font-size:13px;color:var(--sub);font-weight:600}
+.key{background:var(--greenbg);border:1px solid var(--green);border-radius:10px;padding:14px 16px}
+.key b{color:var(--green)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>스프링 API 강의 정리</h1>
+<p class="lead">게터·세터가 뭔지 → 왜 필요한지 → hello-api가 실제로 어떻게 돌아가는지 순서로 보시면 됩니다.</p>
+
+<section>
+<div class="step">1. 게터 / 세터</div>
+<h2>값을 넣는 문(set)과 꺼내는 문(get)</h2>
+<p class="desc"><code>private</code>을 붙인 변수는 클래스 바깥에서 직접 건드릴 수 없습니다. 그래서 값을 넣고 꺼낼 수 있는 메서드를 따로 만들어 두는데, 이게 세터와 게터입니다.</p>
+<div class="safe">
+  <div class="box out"><b>바깥 코드</b><span>Controller 등</span></div>
+  <div class="arrow">→</div>
+  <div class="box door"><b>setName("spring")</b><span>값 넣는 문</span></div>
+  <div class="arrow">→</div>
+  <div class="box vault"><b>private name</b><span>금고 (직접 접근 불가)</span></div>
+  <div class="arrow">→</div>
+  <div class="box door"><b>getName()</b><span>값 꺼내는 문</span></div>
+  <div class="arrow">→</div>
+  <div class="box out"><b>"spring"</b><span>돌려받은 값</span></div>
+</div>
+</section>
+
+<section>
+<div class="step">2. JS와 비교</div>
+<h2>사실 JS에도 같은 개념이 있습니다</h2>
+<div class="grid2">
+<div>
+<p class="label java">Java (강의 코드)</p>
+<pre>static class Hello {
+    <span class="hl">private</span> String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+
+Hello hello = new Hello();
+hello.setName("spring");
+hello.getName();  // "spring"
+hello.name;       // 에러 (private)</pre>
+</div>
+<div>
+<p class="label js">JS로 똑같이 쓰면</p>
+<pre>class Hello {
+    <span class="hl">#name</span>;   // # = private
+
+    getName() {
+        return this.#name;
+    }
+
+    setName(name) {
+        this.#name = name;
+    }
+}
+
+const hello = new Hello();
+hello.setName("spring");
+hello.getName();  // "spring"
+hello.#name;      // 에러 (private)</pre>
+</div>
+</div>
+<p class="desc" style="margin-top:14px">JS에서는 보통 <code>hello.name = "spring"</code>처럼 바로 넣지만, Java는 변수를 private으로 숨기고 get/set 메서드로만 다루는 게 일반적인 규칙입니다. <code>this.name = name</code>은 "이 객체의 name(왼쪽)에 매개변수로 받은 name(오른쪽)을 넣는다"는 뜻입니다.</p>
+</section>
+
+<section>
+<div class="step">3. 이번 강의에서 왜 필요했나</div>
+<h2>Spring이 JSON을 만들 때 getName()을 씁니다</h2>
+<div class="key">
+<b>핵심:</b> <code>/hello-api</code>가 <code>{"name":"spring"}</code>을 돌려줄 수 있는 건, Spring이 Hello 객체 안의 <code>getName()</code>을 찾아서 호출하기 때문입니다. 메서드 이름 <code>getName</code>에서 get을 뗀 <code>name</code>이 JSON의 키가 됩니다. 게터가 없으면 Spring은 private name을 볼 수 없어서 JSON을 제대로 만들지 못합니다.
+</div>
+</section>
+
+<section>
+<div class="step">4. hello-api 전체 흐름</div>
+<h2>localhost:8080/hello-api?name=spring 을 열면 일어나는 일</h2>
+<ol class="flow">
+<li><span class="who">브라우저</span><br>주소창에 <code>/hello-api?name=spring</code> 입력</li>
+<li><span class="who">Spring</span><br><code>@GetMapping("hello-api")</code>가 붙은 <code>helloApi</code> 메서드를 찾아 실행. <code>@RequestParam("name")</code>이 주소의 <code>name=spring</code>을 꺼내 변수 name에 넣음</li>
+<li><span class="who">내 코드</span><br><code>new Hello()</code>로 빈 객체 생성 → <code>setName("spring")</code>으로 값 넣음 → <code>return hello</code></li>
+<li><span class="who">Spring</span><br><code>@ResponseBody</code>가 붙어 있으니 HTML 템플릿을 찾지 않음. 대신 Hello 객체의 <code>getName()</code>을 호출해서 JSON으로 변환</li>
+<li><span class="who">브라우저</span><br>화면에 <code>{"name":"spring"}</code> 표시</li>
+</ol>
+</section>
+
+<section>
+<div class="step">5. 이번 강의 3가지 방식 비교</div>
+<h2>@ResponseBody가 있냐 없냐의 차이</h2>
+<div class="tblwrap"><table class="tbl">
+<tr><th>방식</th><th>코드 특징</th><th>return 값의 의미</th><th>브라우저 결과</th></tr>
+<tr><td>MVC</td><td><code>@ResponseBody</code> 없음</td><td><code>"hello-template"</code> = 화면 파일 이름</td><td>Thymeleaf가 만든 HTML 페이지</td></tr>
+<tr><td>API (문자열)</td><td><code>@ResponseBody</code> 있음</td><td><code>"hello" + name</code> = 그대로 보낼 글자</td><td><code>hellospring</code></td></tr>
+<tr><td>API (객체)</td><td><code>@ResponseBody</code> 있음</td><td><code>hello</code> 객체 = JSON으로 바꿀 데이터</td><td><code>{"name":"spring"}</code></td></tr>
+</table></div>
+<p class="desc" style="margin-top:14px">실무 감각으로 보면 API(객체) 방식이 가장 중요합니다. 지원하시는 팀 업무인 쿠팡이츠·카카오 같은 외부 연동이 전부 이렇게 JSON을 주고받는 방식입니다.</p>
+</section>
+
+<section>
+<div class="step">추천</div>
+<h2>지금은 이것만 이해하고 넘어가셔도 됩니다</h2>
+<ol class="flow">
+<li>private 변수는 get/set 메서드로만 넣고 꺼낸다</li>
+<li><code>@ResponseBody</code>가 없으면 return 값은 "화면 파일 이름", 있으면 "그대로 보낼 데이터"</li>
+<li>객체를 return하면 Spring이 게터를 이용해 JSON으로 바꿔 준다</li>
+</ol>
+<p class="desc">게터·세터는 다음 강의(회원 관리 예제)에서 계속 나와서 반복하다 보면 자연스럽게 익숙해집니다. IntelliJ에서 변수만 쓰고 Cmd + N → Getter and Setter를 누르면 자동으로 만들어 줘서 직접 칠 일도 거의 없습니다.</p>
+</section>
+</div>
+</body>
+</html>
