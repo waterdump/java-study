@@ -20,6 +20,11 @@ class MemberServiceIntegrationTest {
     @Autowired MemberService memberService;
     @Autowired MemberRepository memberRepository;
 
+    @AfterEach
+    public void afterEach() {
+        
+    }
+
     @Test
     void 회원가입() {
 //        given
